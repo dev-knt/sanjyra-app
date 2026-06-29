@@ -15,7 +15,7 @@ export function SearchScreen({ onOpen }: { onOpen: (id: string) => void }) {
     <div className="animate-fadeup">
       <div className="px-5 pt-6 pb-3">
         <h1 className="kg-name text-2xl font-bold">Санжыра</h1>
-        <p className="text-sm text-muted mt-0.5">Багыш уруусу · Жалал-Абад</p>
+        <p className="text-sm text-muted mt-0.5">Багыш уруусу · а. Сары-Булак · Жалал-Абад</p>
       </div>
 
       <div className="px-5 sticky top-0 z-10 bg-paper/90 backdrop-blur pb-3 pt-1">
@@ -67,7 +67,7 @@ export function SearchScreen({ onOpen }: { onOpen: (id: string) => void }) {
                 >
                   <img
                     src={`${import.meta.env.BASE_URL}baatyr.jpg`}
-                    alt="Сары-Багыш баатыры"
+                    alt="Багыш баатыры"
                     draggable={false}
                     onError={() => setArtFailed(true)}
                     className="h-full w-full select-none object-cover"

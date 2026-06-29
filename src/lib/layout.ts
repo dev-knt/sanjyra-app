@@ -12,7 +12,7 @@ export function rootIds(): string[] {
 // A virtual super-root lets us lay out multiple founding ancestors as one tree.
 const SUPER: PersonNode = {
   id: '__root__',
-  name: 'Сары-Багыш',
+  name: 'Багыш',
   fatherId: null,
   sex: 'm',
   living: false,
