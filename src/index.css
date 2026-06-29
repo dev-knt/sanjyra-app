@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Spectral:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Theme tokens. Each [data-theme] repaints the whole app. ---- */
+:root,
+[data-theme='koldoo'] {
+  /* "Талаа" (Steppe) — warm sand + deep teal + terracotta. Earthy, cultural. */
+  --c-ink: 39 32 25;
+  --c-muted: 122 113 99;
+  --c-paper: 244 238 227;
+  --c-surface: 255 250 242;
+  --c-line: 230 220 203;
+  --c-brand: 31 111 107;
+  --c-brand-soft: 215 235 232;
+  --c-accent: 194 100 60;
+}
+
+[data-theme='tenir'] {
+  /* "Теңир" — cool sky + slate. Modern, airy. */
+  --c-ink: 17 24 39;
+  --c-muted: 100 116 139;
+  --c-paper: 244 247 251;
+  --c-surface: 255 255 255;
+  --c-line: 222 230 240;
+  --c-brand: 13 110 164;
+  --c-brand-soft: 213 234 246;
+  --c-accent: 217 119 87;
+}
+
+[data-theme='kok'] {
+  /* "Көк" — dark mode, emerald accent. Night reading. */
+  --c-ink: 237 240 245;
+  --c-muted: 148 158 176;
+  --c-paper: 15 20 28;
+  --c-surface: 25 32 43;
+  --c-line: 44 54 68;
+  --c-brand: 52 211 153;
+  --c-brand-soft: 30 58 50;
+  --c-accent: 246 196 83;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-paper text-ink font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Кыргыз typographic touch for names */
+.kg-name {
+  @apply font-display tracking-tight;
+}
+
+@keyframes fadeup {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeup {
+  animation: fadeup 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
