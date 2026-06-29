@@ -10,11 +10,16 @@ import { rootIds } from './layout'
 const BRANCH_HUES = [200, 28, 150, 268, 338, 48, 178, 96]
 const SPINE_HUE = 178 // the founding line (root → fan-out) reads in the brand teal
 
-// The first node (from the root, down the single-child chain) that fans out into
-// 2+ children. Everyone below it belongs to one of its children's branches.
+// The first node (from the root) that truly fans out into 2+ substantial lines.
+// Childless siblings along the spine (e.g. Аттокур's brothers) count as leaf tips,
+// not branches — so colouring stays anchored at Аттокур's sons.
 const FANOUT = (() => {
   let node = getNode(rootIds()[0] ?? '')
-  while (node && node.childrenIds.length === 1) node = NODES.get(node.childrenIds[0])
+  while (node) {
+    const branching = node.childrenIds.filter((id) => (NODES.get(id)?.childrenIds.length ?? 0) > 0)
+    if (branching.length === 1) node = NODES.get(branching[0])
+    else break
+  }
   return node
 })()
 

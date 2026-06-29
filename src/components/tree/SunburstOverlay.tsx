@@ -4,7 +4,8 @@ import { allNodes } from '../../lib/graph'
 import { rootIds } from '../../lib/layout'
 import { SunburstTree } from './SunburstTree'
 
-const FOCAL = allNodes().find((n) => n.name === 'Аттокур')?.id ?? rootIds()[0]
+// Start the circular view at Аттокур's father (Шаболот) so his siblings show too.
+const FOCAL = allNodes().find((n) => n.name === 'Шаболот')?.id ?? rootIds()[0]
 
 // Fullscreen, smoothly-zoomable whole-clan sunburst. Opened from the home page.
 export function SunburstOverlay({ onClose, onOpen }: { onClose: () => void; onOpen: (id: string) => void }) {
