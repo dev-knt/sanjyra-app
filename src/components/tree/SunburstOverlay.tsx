@@ -1,11 +1,18 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { allNodes } from '../../lib/graph'
+import { getNode } from '../../lib/graph'
 import { rootIds } from '../../lib/layout'
 import { SunburstTree } from './SunburstTree'
 
-// Start the circular view at Аттокур's father (Шаболот) so his siblings show too.
-const FOCAL = allNodes().find((n) => n.name === 'Шаболот')?.id ?? rootIds()[0]
+// Start the circular view at the FIRST ancestor (from Багыш down) who has more
+// than one son — i.e. the topmost branching point. Everything above is a single
+// spine so it adds nothing to a fan. As higher ancestors gain siblings in the
+// data, this starting point automatically moves up — no code change needed.
+const FOCAL = (() => {
+  let node = getNode(rootIds()[0] ?? '')
+  while (node && node.childrenIds.length === 1) node = getNode(node.childrenIds[0])
+  return node?.id ?? rootIds()[0]
+})()
 
 // Fullscreen, smoothly-zoomable whole-clan sunburst. Opened from the home page.
 export function SunburstOverlay({ onClose, onOpen }: { onClose: () => void; onOpen: (id: string) => void }) {
