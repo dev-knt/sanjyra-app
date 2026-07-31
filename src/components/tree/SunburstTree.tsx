@@ -189,7 +189,12 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
             const light = Math.max(48, 88 - n.depth * 5)
             const midR = (r0 + r1) / 2
             const arcLen = (n.a1 - n.a0) * midR
+            // Every node is labelled; the font scales with the wedge's tangential
+            // size so tiny branches get tiny text — barely visible when zoomed out,
+            // legible once you zoom in (viewBox zoom scales the text with the arcs).
+            const fontSize = Math.max(2.4, Math.min(RING * 0.18, arcLen * 0.6))
             const years = lifespan(getNode(n.id)!)
+            const label = years && fontSize > 9 ? `${n.name} · ${years}` : n.name
             let deg = (mid * 180) / Math.PI - 90
             if (deg > 90 || deg < -90) deg += 180
             const tx = midR * Math.sin(mid)
@@ -209,17 +214,15 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
                     {n.name}
                   </text>
                 ) : (
-                  arcLen > 24 && (
-                    <text
-                      transform={`translate(${tx},${ty}) rotate(${deg})`}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      className="kg-name pointer-events-none"
-                      style={{ fontSize: Math.min(19, RING * 0.18), fontWeight: 600, fill: `hsl(${hue} 45% 24%)` }}
-                    >
-                      {years ? `${n.name} · ${years}` : n.name}
-                    </text>
-                  )
+                  <text
+                    transform={`translate(${tx},${ty}) rotate(${deg})`}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="kg-name pointer-events-none"
+                    style={{ fontSize, fontWeight: 600, fill: `hsl(${hue} 45% 24%)` }}
+                  >
+                    {label}
+                  </text>
                 )}
               </g>
             )
