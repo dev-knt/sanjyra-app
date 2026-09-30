@@ -71,6 +71,8 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
   const SIZE = (R + pad) * 2 // content box, centred at SIZE/2
 
   const wrap = useRef<HTMLDivElement>(null)
+  const openRef = useRef(onOpen)
+  openRef.current = onOpen
   const [vb, setVb] = useState<VB>({ x: 0, y: 0, w: SIZE, h: SIZE })
   const pointers = useRef<Map<number, { x: number; y: number }>>(new Map())
   const drag = useRef<{ x: number; y: number } | null>(null)
@@ -162,21 +164,11 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
 
   const c = SIZE / 2
 
-  return (
-    <div ref={wrap} className="relative h-full w-full overflow-hidden touch-none cursor-grab active:cursor-grabbing">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
-        preserveAspectRatio="xMidYMid meet"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onWheel={onWheel}
-      >
-        <g transform={`translate(${c},${c})`}>
-          {nodes.map((n) => {
+  // Drawn once per layout. Pan/zoom only change the viewBox, so React never
+  // re-renders thousands of wedges per frame (was ~360ms/frame at 5,200 people).
+  const drawing = useMemo(
+    () =>
+      nodes.map((n) => {
             const isCenter = n.depth === 0
             const r0 = n.depth * RING
             const r1 = (n.depth + 1) * RING - 3
@@ -200,7 +192,7 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
             const tx = midR * Math.sin(mid)
             const ty = -midR * Math.cos(mid)
             const tap = () => {
-              if (!moved.current) onOpen(n.id)
+              if (!moved.current) openRef.current(n.id)
             }
             return (
               <g key={n.id} className="cursor-pointer" onClick={tap}>
@@ -215,6 +207,7 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
                   </text>
                 ) : (
                   <text
+                    data-lod={fontSize < 6 ? 3 : fontSize < 11 ? 2 : 1}
                     transform={`translate(${tx},${ty}) rotate(${deg})`}
                     textAnchor="middle"
                     dominantBaseline="central"
@@ -226,8 +219,31 @@ export function SunburstTree({ focalId, onOpen }: { focalId: string; onOpen: (id
                 )}
               </g>
             )
-          })}
-        </g>
+          }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [nodes],
+  )
+
+  // Hide labels that would render under ~5 on-screen pixels; they appear as you zoom.
+  const px = wrap.current ? wrap.current.clientWidth / vb.w : 0.12
+  const lod = 11 * px < 5 ? 'lod-2' : 6 * px < 5 ? 'lod-3' : ''
+
+
+  return (
+    <div ref={wrap} className="relative h-full w-full overflow-hidden touch-none cursor-grab active:cursor-grabbing">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
+        preserveAspectRatio="xMidYMid meet"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onWheel={onWheel}
+        className={lod}
+      >
+        <g transform={`translate(${c},${c})`}>{drawing}</g>
       </svg>
 
       <div className="absolute bottom-3 right-3 flex flex-col gap-1.5">

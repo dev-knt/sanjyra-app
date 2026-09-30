@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ancestorChain } from '../lib/graph'
 import { WEB3FORMS_ACCESS_KEY } from '../config'
+import { absoluteUrl } from '../lib/router'
 import { Avatar } from './ui'
 import type { PersonNode } from '../types'
 
@@ -57,6 +58,7 @@ export function RequestEditModal({ person, onClose }: { person: PersonNode; onCl
           from_name: requester.trim() || 'Санжыра колдонуучу',
           'Адам': person.name,
           'Ата-теги': chain,
+          'Шилтеме': absoluteUrl({ name: 'person', id: person.id }),
           'Эмнени оңдоо/кошуу керек': what.trim(),
           'Туура маалымат': correct.trim() || '—',
           'Сураган киши': requester.trim(),
@@ -77,7 +79,7 @@ export function RequestEditModal({ person, onClose }: { person: PersonNode; onCl
   }
 
   const inputCls =
-    'w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/20'
+    'w-full rounded-xl border border-line bg-surface px-3 py-3 text-base outline-none focus:border-brand focus:ring-2 focus:ring-brand/20'
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
@@ -118,7 +120,7 @@ export function RequestEditModal({ person, onClose }: { person: PersonNode; onCl
           </div>
         ) : (
           <>
-            <p className="mt-3 rounded-xl bg-brand-soft/60 px-3 py-2 text-xs text-ink/80">
+            <p className="mt-3 rounded-xl bg-brand-soft/60 px-3 py-2 text-sm text-ink/80">
               Сурамыңыз админге жөнөтүлөт. Маалымат <b>түз өзгөртүлбөйт</b> — аксакалдар менен текшерилип, бекитилгенден кийин гана жаңыланат.
             </p>
 
@@ -139,11 +141,11 @@ export function RequestEditModal({ person, onClose }: { person: PersonNode; onCl
               </div>
               <Field label="Байланыш (телефон)" required>
                 <input value={contact} onChange={(e) => setContact(e.target.value)} type="tel" inputMode="tel" placeholder="+996…" className={inputCls} />
-                <span className="mt-1 block text-[11px] text-muted">Текшерүү үчүн аксакалдар чалышы мүмкүн.</span>
+                <span className="mt-1 block text-sm text-muted">Текшерүү үчүн аксакалдар чалышы мүмкүн.</span>
               </Field>
             </div>
 
-            {status === 'error' && <p className="mt-3 rounded-xl bg-rose-100 px-3 py-2 text-xs font-medium text-rose-700">{err}</p>}
+            {status === 'error' && <p className="mt-3 rounded-xl bg-rose-100 px-3 py-2 text-sm font-medium text-rose-700">{err}</p>}
 
             <div className="mt-5 flex gap-2">
               <button onClick={onClose} className="rounded-xl border border-line bg-surface px-4 py-3 text-sm font-semibold text-muted">
@@ -168,7 +170,7 @@ export function RequestEditModal({ person, onClose }: { person: PersonNode; onCl
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-muted">
+      <span className="mb-1 block text-sm font-medium text-muted">
         {label} {required && <span className="text-rose-500">*</span>}
       </span>
       {children}

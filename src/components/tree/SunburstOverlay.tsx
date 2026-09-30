@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { getNode } from '../../lib/graph'
-import { rootIds } from '../../lib/layout'
+import { getNode, rootIds } from '../../lib/graph'
 import { SunburstTree } from './SunburstTree'
 
 // Start the circular view at the FIRST ancestor (from Багыш down) who has more
@@ -27,10 +26,10 @@ export function SunburstOverlay({ onClose, onOpen }: { onClose: () => void; onOp
     <div className="fixed inset-0 z-50 flex flex-col bg-paper">
       <header className="flex items-center justify-between px-4 py-3 border-b border-line/60 shrink-0">
         <div>
-          <h1 className="kg-name text-base font-bold">Бүт санжыра дарагы</h1>
-          <p className="text-[11px] text-muted">Чымчып чоңойтуңуз · сүйрөп жылдырыңыз · адамды басыңыз</p>
+          <h1 className="kg-name text-xl font-bold">Бүт санжыра дарагы</h1>
+          <p className="text-sm text-muted">Эки манжа менен чоңойтуңуз · сүйрөп жылдырыңыз · адамды басыңыз</p>
         </div>
-        <button onClick={onClose} aria-label="Жабуу" className="flex h-9 w-9 items-center justify-center rounded-full text-xl text-muted hover:bg-line/50 active:scale-90">
+        <button onClick={onClose} aria-label="Жабуу" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl text-muted hover:bg-line/50 active:scale-90">
           ✕
         </button>
       </header>

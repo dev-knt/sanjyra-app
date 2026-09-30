@@ -273,19 +273,37 @@ let chained: Raw = BAYDOLAT
 for (const name of ANCESTORS) chained = [name, [chained]]
 const TREE: Raw = chained // Багыш топто
 
+// Stable id from the person's full father-line of names (FNV-1a, two seeds), so
+// adding people anywhere never renumbers anyone else: shared links and the saved
+// «Мен» choice stay valid. Correcting an ancestor's spelling does change the ids
+// below him; permanent ids come with the spreadsheet import.
+function lineId(path: string): string {
+  let h1 = 0x811c9dc5
+  let h2 = 0x9747b28c
+  for (let i = 0; i < path.length; i++) {
+    const c = path.charCodeAt(i)
+    h1 = Math.imul(h1 ^ c, 0x01000193)
+    h2 = Math.imul(h2 ^ c, 0x5bd1e995)
+  }
+  return (h1 >>> 0).toString(36) + ((h2 >>> 0) % 1296).toString(36).padStart(2, '0')
+}
+
 // Flatten the nested tree into the flat Person[] the app consumes.
 function build(): Person[] {
   const out: Person[] = []
-  let counter = 0
-  const walk = (node: Raw, fatherId: string | null) => {
-    const id = 'p' + ++counter
+  const used = new Set<string>()
+  const walk = (node: Raw, fatherId: string | null, path: string) => {
+    const line = `${path}/${node[0]}`
+    let id = lineId(line)
+    for (let n = 2; used.has(id); n++) id = `${lineId(line)}-${n}` // same-name brothers
+    used.add(id)
     const kids = node[1]
     // Heuristic until real data: people with no recorded children are treated as
     // living (likely the youngest generation); everyone with descendants = deceased.
     out.push({ id, name: node[0], fatherId, sex: 'm', living: !kids || kids.length === 0 })
-    if (kids) for (const k of kids) walk(k, id)
+    if (kids) for (const k of kids) walk(k, id, line)
   }
-  walk(TREE, null)
+  walk(TREE, null, '')
   return out
 }
 

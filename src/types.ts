@@ -27,5 +27,4 @@ export interface PersonNode extends Person {
   generation: number // 0 = oldest known ancestor, increases downward
 }
 
-export type Theme = 'koldoo' | 'tenir' | 'kok'
-export type Screen = 'search' | 'person' | 'relate' | 'tree' | 'persontree'
+export type Theme = 'talaa' | 'shyrdak' | 'too'

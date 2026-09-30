@@ -15,8 +15,8 @@ export default {
         accent: 'rgb(var(--c-accent) / <alpha-value>)',
       },
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Spectral"', 'Georgia', 'serif'],
+        sans: ['"PT Sans"', '"Segoe UI"', 'system-ui', 'sans-serif'],
+        display: ['"PT Serif"', 'Georgia', 'serif'],
       },
       borderRadius: {
         xl: '1rem',

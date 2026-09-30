@@ -75,6 +75,29 @@ export function sevenAta(id: string, depth = 7): PersonNode[] {
   return ancestorChain(id).slice(0, depth + 1)
 }
 
+// Root ancestors (no father in the tree). Usually one: Багыш.
+export function rootIds(): string[] {
+  return [...NODES.values()].filter((n) => !n.fatherId).map((n) => n.id)
+}
+
+// The nearest `n` fathers, closest first: [father, grandfather, great-grandfather].
+export function fathers(id: string, n = 3): PersonNode[] {
+  return ancestorChain(id).slice(1, n + 1)
+}
+
+// Number of recorded descendants (sons, grandsons, …), cached.
+const descCache = new Map<string, number>()
+export function descendantCount(id: string): number {
+  const hit = descCache.get(id)
+  if (hit != null) return hit
+  let n = 0
+  for (const c of NODES.get(id)?.childrenIds ?? []) n += 1 + descendantCount(c)
+  descCache.set(id, n)
+  return n
+}
+
+export const MAX_GENERATION = Math.max(0, ...[...NODES.values()].map((n) => n.generation))
+
 // All descendant ids of a person (not including the person).
 export function descendantIds(id: string): Set<string> {
   const out = new Set<string>()
